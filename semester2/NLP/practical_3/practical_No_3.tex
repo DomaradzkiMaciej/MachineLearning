@@ -1,0 +1,131 @@
+% --------------------------------------------------------------
+% This is all preamble stuff that you don't have to worry about.
+% Head down to where it says 'Start here'
+% --------------------------------------------------------------
+ 
+\documentclass[12pt]{article}
+ 
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\usepackage{polski}
+\usepackage[polish]{babel}
+
+\begin{document}
+ 
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+ 
+\title{Practical No. 3}%replace X with the appropriate number
+\author{Maciej Domaradzki\\ %replace with your name
+md406127@students.mimuw.edu.pl}
+ 
+\maketitle
+ 
+\section{Part 1 }
+\subsection*{g) }
+Mask sets $e_t$ to $-\infty$ for padded tokens. Thanks to this probability of padded token is zero, because $\exp(-\infty) = 0$ and attention doesn't relay information from padded tokens.
+
+\subsection*{i) }
+BLEU Score: 10.391320795176298
+
+\subsection*{j) }
+\begin{tabular}{|| p{3 cm} || p{3 cm} | p{3 cm} ||} 
+ \hline
+  & Advantage & Disadvantage \\ 
+ \hline\hline
+ Dot product attention & Doesn't need extra matrix with weights & gives worse results than additive attention\\ 
+ \hline
+ Multiplicative attention & Less computationally expensive than other two types & Needs extra matrix with weight comparing to dot product attention\\
+ \hline
+ Additive attention & Gives the best results & More complex than other two types\\
+ \hline
+\end{tabular}
+
+\section{Part 2 }
+\subsection*{a) }
+
+\begin{itemize}
+  \item Original: So what do we know about this?\\
+        Correct: Więc - co wiemy?\\
+        Model's output: Co wiemy o to?
+        
+        In Polish there are many ways to translate word 'this' and  our model didn't concluse correct one from the context. We could add more similar examples to training set to fix this error.
+        
+  \item Original: So we have 45 minus - - what's 5 times 4?\\
+        Correct: więc mamy 45 odjąć - ile to jest 5 razy 4?\\
+        Model's output: Czyli mamy 45 minus minus ile to jest 5 razy 4?
+        
+        Model translated '-' as minus. This may be couse by the fact, that there are many examples in training data, where '-' is used with numbers as a minus not a hyphen. We could use more sentences not related to math expressions, but with numers and hyphens.
+        
+  \item Original: 'Anyway, this is an important thing in probability and '\\
+        Correct: Niemniej jednak jest to ważna rzecz w prawdopodobieństwie\\ 
+        Model's 'W każdym razie, to jest ważne rzecz w prawdopodobieństwo'
+        
+        Model didn't used correct grammatical form of word 'prawdopodobieństwo'. Maybe in training data, there isn't used form 'prawdopodobieństwie' or is used rarely, so model couldn't conclude correct form. We could add more examples, where the same English word is translated to Polish word in diffrent forms
+        
+  \item Original: 'this huge, the largest economy in the world doing everything in its power '\\
+        Correct: 'ten wielki kraj, największa gospodarka na świecie robi wszystko co w jej mocy, '\\
+        Model's output: \textless unk \textgreater to największe gospodarka w świecie robią wszystko w jego \textless unk \textgreater '
+        
+        We have here direct translation of 'in the world' to 'w świecie'. Model didn't conclude that in Polish, there is used different preposition in this context. We could add more examples with different translation of prepositions to training set.
+        
+  \item Original: But the Greek people could actually then move on with their lives.\\
+        Correct: Ale Grecy mogliby właściwie żyć normalnie dalej. \\
+        Model's output: Ale grecka ludzie mogą być w rzeczywistości \textless unk \textgreater
+        
+        Model tried translate 'Greek people' as two words. It could be caused by the fact, that model seen many examples of translating 'Greek' as 'grecki' or 'greacka', but didn't see it in context with word 'people' or seen it too rarely. We could add more examples in form nationality + 'people' to training set.
+\end{itemize}
+\subsection*{b) }
+The best model got 28.23 BLUE Score and our model got 6.316. Difference may be caused by using bigger training set and/or using better model. The property of Polish language that causes the drop is probably it's complex grammar. To overcome, at least partially, this issue, we could use more data during training with diverse examples.
+ 
+\subsection*{c) }
+
+\begin{enumerate}
+  \item For $c_1$:
+            $$p_1 = \frac{4}{4} = 1, \quad p_2 = \frac{2}{3}, \quad c = 4, \quad r_*=5, \quad
+             BP = exp(-\frac{1}{5})$$
+             $$BLEU =  exp(-\frac{1}{5}) \times exp(\sum_{n=1}^2 \frac{1}{2} \log p_n) \approx 0.636$$
+             
+        For $c_2$:
+            $$p_1 = \frac{6}{8}, \quad p_2 = \frac{4}{7}, \quad c = 8, \quad r_*=7, \quad
+             BP = 1$$
+             $$BLEU =  1 \times exp(\sum_{n=1}^2 \frac{1}{2} \log p_n) \approx 0.655$$
+             
+        The second translation got bigger BLEU score. I don't agree that it's better translation, because there is 'zbiór' instead of 'podzbiór' and there should be only one of those words: 'oznacza' and 'jest'. 
+  \item For $c_1$:
+            $$p_1 = \frac{4}{4} = 1, \quad p_2 = \frac{2}{3}, \quad c = 4, \quad r_*=5, \quad
+             BP = exp(-\frac{1}{5})$$
+             $$BLEU =  exp(-\frac{1}{5}) \times exp(\sum_{n=1}^2 \frac{1}{2} \log p_n) \approx 0.636$$
+             
+        For $c_2$:
+            $$p_1 = \frac{3}{8}, \quad p_2 = \frac{1}{7}, \quad c = 8, \quad r_*=5, \quad
+             BP = 1$$
+             $$BLEU =  1 \times exp(\sum_{n=1}^2 \frac{1}{2} \log p_n) \approx 0.231$$
+             
+        Now the first translation got bigger BLEU score and I agree that it's better translation.
+        
+  \item  Usually there are more than one way we can translate given sentence. Using only one reference may cause the overfitting of our model.
+  
+  \item 
+  \begin{itemize}
+    \item Adventages:
+    \begin{itemize}
+      \item fast and easy to computate
+      \item thanks to it commonness, models are easy to compare
+    \end{itemize}
+    
+    \item Disadventages:
+    \begin{itemize}
+      \item doesn't consider meaning
+      \item doesn't work well for morphologically rich languages
+    \end{itemize}
+  \end{itemize}
+  
+\end{enumerate}
+
+
+
+ 
+\end{document}
