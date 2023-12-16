@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  app_server:
+    image: st108vm101.rtb-lab.pl/app_server
+    build: ./app_server
+    ports:
+      - "8000:8000"
+    deploy:
+      mode: replicated
+      replicas: 10
+      placement:
+        max_replicas_per_node: 4
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "128m"
+
+  app_aggregator:
+    image: st108vm101.rtb-lab.pl/app_aggregator
+    build: ./app_aggregator
+    deploy:
+      mode: replicated
+      replicas: 5
+      placement:
+        max_replicas_per_node: 2
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "128m"
+
+  app_haproxy:
+    image: localhost/app_haproxy
+    build: ./app_haproxy
+    ports:
+      - "9000:9000"
+      - "10000:10000"
+    privileged: true
+    volumes:
+      - ./app_haproxy:/usr/local/etc/haproxy:ro
+    deploy:
+      placement:
+        constraints: [ node.labels.haproxy == true ]
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "128m"
